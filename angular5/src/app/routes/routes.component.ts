@@ -21,13 +21,10 @@ export class RoutesComponent implements OnInit {
    }
 
       getPositionById = (id: string) => {
-    let positions: Array<any>;
     let positionForBus;
     this.digitransit.getPosition(id)
     .subscribe(
       (response: Array<any>) => {
-          // let result: Array<Object> = [];
-          //console.log(response);
       positionForBus = this.sortPositions(response)
       positionForBus = this.splicePositions(positionForBus);
       console.log(positionForBus);
@@ -60,37 +57,32 @@ export class RoutesComponent implements OnInit {
           this.dataInfo = res.data.stops[0].patterns;
           this.stopInfo = res.data.stops[0];
 
-         let landl = this.getPositionById('HSL:1009');
+         for (let i = 0, l = this.dataInfo.length; i < l; i++) {
 
-          //this.getPositionById('HSL:5510');
-          console.log(landl);
+            this.digitransit.getPosition(this.dataInfo[i].route.gtfsId)
+            .subscribe(
+            (res) => {
+            let positions = this.sortPositions(res);
+            positions = this.splicePositions(positions);
 
-          for (let i = 0, l = this.dataInfo.length; i < l; i++) {
+            this.dataInfo[i].lat = positions;
+            this.dataInfo[i].long = positions;
+            console.log(positions);
+            });
+    }
+
+        // 'HSL:2235N'
+
+
+        /*  for (let i = 0, l = this.dataInfo.length; i < l; i++) {
 
             let id = this.dataInfo[i].route.gtfsId;
-            
+            this.dataInfo[i].lat = landl.lat;
+            this.dataInfo[i].long = landl.long;
 
-           // this.dataInfo[i].latlongId = id;
-           // let landl = this.getPositionById('HSL:1009');
-          this.dataInfo[i].lat = landl;
-          this.dataInfo[i].long = landl;
-
-        /*   var x = 1;
-            var y = null; // To keep under proper scope
-
-            setTimeout(function() {
-               x = x * 3 + 2;
-                y = x / 2;
-        }, 100); */
-
-        }
-
-        console.log(this.dataInfo);
-
-          }
-        );
+          } */
+        });
 
   }
-
 }
 
